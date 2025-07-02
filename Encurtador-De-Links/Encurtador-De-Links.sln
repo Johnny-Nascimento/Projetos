@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encurtador-De-Links", "Encurtador-De-Links.csproj", "{2FC69D34-42B6-40E8-93BA-351D58A108C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FC69D34-42B6-40E8-93BA-351D58A108C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC69D34-42B6-40E8-93BA-351D58A108C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC69D34-42B6-40E8-93BA-351D58A108C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC69D34-42B6-40E8-93BA-351D58A108C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {226D4444-C658-46A9-B2B6-956EAAA26EEE}
+	EndGlobalSection
+EndGlobal
