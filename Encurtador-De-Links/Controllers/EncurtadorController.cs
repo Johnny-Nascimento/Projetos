@@ -1,6 +1,5 @@
 ﻿using Encurtador_De_Links.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Encurtador_De_Links.Controllers;
 
@@ -8,7 +7,7 @@ namespace Encurtador_De_Links.Controllers;
 [Route("[controller]")]
 public class EncurtadorController : ControllerBase
 {
-    private List<LinkEncurtado> Links = new List<LinkEncurtado>(); // Futuramente Readonly
+    private List<LinkEncurtado>? Links { get; set; } // Futuramente Readonly, banco de dados de vdd
 
     [HttpPost(Name = "PostEncurtador")]
     public void Post([FromBody] Link link)
@@ -26,12 +25,29 @@ public class EncurtadorController : ControllerBase
     }
 
     [HttpGet(Name = "GetEncurtador/{id}")]
-    public LinkEncurtado? GetById(Guid id)
+    public string? GetById(Guid id)
     {
-        var linkCurto = Links.FirstOrDefault(l => l.Id == id);
+        var linkCurto = Links?.FirstOrDefault(l => l.Id == id);
 
-        // var v = Redirect(linkCurto.Encurtado);
+        return linkCurto?.Original;
+    }
 
-        return linkCurto;
+    // Autenticação, não deve ser usado sem role de admin, via servir para ter um painel de controle
+    [HttpGet(Name = "GetEncurtador/{inativo}")]
+    public IEnumerable<LinkEncurtado> GetAll(bool trazerInativos)
+    {
+        if (trazerInativos)
+            return Links;
+        else
+            return Links.Where(l => l.Inativo == false);
+    }
+
+    // Retornar sucesso/erro
+    [HttpGet(Name = "UpdateEncurtador/{linkUpdate}")]
+    public void Update(LinkUpdate linkUpdate)
+    {
+        LinkEncurtado? linkCurto = GetById(linkUpdate.Id);
+        if (linkCurto != null)
+            linkCurto.Original = "teste";
     }
 }

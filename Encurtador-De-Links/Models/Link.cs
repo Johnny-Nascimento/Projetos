@@ -14,6 +14,16 @@ public class Link
     }
 }
 
+public class LinkUpdate : Link
+{
+    public Guid Id { get; set; }
+
+    public override string ToString()
+    {
+        return String.Format("{0} Id:{1}", base.ToString(), Id);
+    }
+}
+
 public class LinkEncurtado
 {
     public Guid Id { get; }
