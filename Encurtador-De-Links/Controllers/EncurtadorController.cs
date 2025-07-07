@@ -47,8 +47,7 @@ public class EncurtadorController : ControllerBase
         if (linkCurto == null)
             return NotFound();
 
-
-        return Ok(linkCurto?.Original);
+        return Redirect(linkCurto.Original);
     }
 
     // Retornar sucesso/erro
