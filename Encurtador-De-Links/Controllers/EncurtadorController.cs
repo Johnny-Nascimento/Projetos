@@ -7,47 +7,56 @@ namespace Encurtador_De_Links.Controllers;
 [Route("[controller]")]
 public class EncurtadorController : ControllerBase
 {
-    private List<LinkEncurtado>? Links { get; set; } // Futuramente Readonly, banco de dados de vdd
+    private static List<LinkEncurtado>? Links { get; set; } = new List<LinkEncurtado>(); // Futuramente Readonly, banco de dados de vdd
 
-    [HttpPost(Name = "PostEncurtador")]
-    public void Post([FromBody] Link link)
+    [HttpPost]
+    public IActionResult Post([FromBody] Link link)
     {
         Guid id = Guid.NewGuid(); // Garantir unicidade?
 
-        string linkCurto = $"https://localhost:7245/Encurtador/{id}";
+        string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // dominio/id
 
-        LinkEncurtado linkEncurtado = new LinkEncurtado(id, DateTime.Now, link.Original, linkCurto, inativo:false);
+        LinkEncurtado linkEncurtado = new LinkEncurtado(
+            id,
+            DateTime.Now,
+            link.Original,
+            linkCurto,
+            inativo: false);
 
         Links.Add(linkEncurtado);
 
-        foreach (var item in Links)
-            Console.WriteLine(item.ToString());
-    }
-
-    [HttpGet(Name = "GetEncurtador/{id}")]
-    public string? GetById(Guid id)
-    {
-        var linkCurto = Links?.FirstOrDefault(l => l.Id == id);
-
-        return linkCurto?.Original;
+        return CreatedAtAction("GetById", new { id = id }, linkEncurtado);
     }
 
     // Autenticação, não deve ser usado sem role de admin, via servir para ter um painel de controle
-    [HttpGet(Name = "GetEncurtador/{inativo}")]
-    public IEnumerable<LinkEncurtado> GetAll(bool trazerInativos)
+    [HttpGet]
+    public IEnumerable<LinkEncurtado>? GetAll([FromQuery] bool trazerInativos, [FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
         if (trazerInativos)
-            return Links;
+            return Links.Skip(skip).Take(take);
         else
-            return Links.Where(l => l.Inativo == false);
+            return Links?.Where(l => l.Inativo == false).Skip(skip).Take(take);
+    }
+
+
+    [HttpGet("{id}")]
+    public IActionResult GetById(Guid id)
+    {
+        var linkCurto = Links?.FirstOrDefault(l => l.Id == id);
+
+        if (linkCurto == null)
+            return NotFound();
+
+
+        return Ok(linkCurto?.Original);
     }
 
     // Retornar sucesso/erro
-    [HttpGet(Name = "UpdateEncurtador/{linkUpdate}")]
-    public void Update(LinkUpdate linkUpdate)
-    {
-        LinkEncurtado? linkCurto = GetById(linkUpdate.Id);
-        if (linkCurto != null)
-            linkCurto.Original = "teste";
-    }
+    // [HttpPut(Name = "UpdateEncurtador/{linkUpdate}")]
+    // public void Update(LinkUpdate linkUpdate)
+    // {
+    //     LinkEncurtado? linkCurto = GetById(linkUpdate.Id);
+    //     if (linkCurto != null)
+    //         linkCurto.Original = "teste";
+    // }
 }
