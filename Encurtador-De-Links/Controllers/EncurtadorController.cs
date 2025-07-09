@@ -12,7 +12,10 @@ public class EncurtadorController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] Link link)
     {
-        Guid id = Guid.NewGuid(); // Garantir unicidade?
+        Guid id = Guid.NewGuid();
+
+        if (Links?.FirstOrDefault(l => l.Id == id) != null)
+            return Conflict($"Já existe um recurso com esse ID tente novamente.");
 
         string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // dominio/id
 
