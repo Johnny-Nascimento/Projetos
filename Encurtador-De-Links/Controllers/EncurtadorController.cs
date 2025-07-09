@@ -53,12 +53,16 @@ public class EncurtadorController : ControllerBase
         return Ok(linkCurto.Original);
     }
 
-    // Retornar sucesso/erro
-    // [HttpPut(Name = "UpdateEncurtador/{linkUpdate}")]
-    // public void Update(LinkUpdate linkUpdate)
-    // {
-    //     LinkEncurtado? linkCurto = GetById(linkUpdate.Id);
-    //     if (linkCurto != null)
-    //         linkCurto.Original = "teste";
-    // }
+    [HttpPut(Name = "UpdateEncurtador/{linkUpdate}")]
+    public IActionResult Update(LinkUpdate linkUpdate)
+    {
+        var linkCurto = Links?.FirstOrDefault(l => l.Id == linkUpdate.Id);
+
+        if (linkCurto == null)
+            return NotFound();
+
+        linkCurto.Update(linkUpdate);
+
+        return Ok(linkCurto);
+    }
 }
