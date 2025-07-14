@@ -6,13 +6,11 @@ public class Link
 {
     public Guid Id { get; private set; }
     public DateTime DataHoraCriacao { get; private set; }
-    [Required(ErrorMessage = "Link original é obrigatório")]
-    [Url(ErrorMessage = "Link inválido")]
     public string Original { get; private set; } = string.Empty; // Talvez remover classe e trabalhar com URI ou URL ou alguma classe especifica para links
     public string Encurtado { get; private set; } = string.Empty; // Talvez remover classe e trabalhar com URI ou URL ou alguma classe especifica para links
     public bool Inativo { get; private set; }
 
-    public Link(Guid id, DateTime dataHoraCriacao, string original, string encurtado, bool inativo)
+    public Link(Guid id, DateTime dataHoraCriacao, string original, string encurtado, bool inativo = false)
     {
         Id = id;
         DataHoraCriacao = dataHoraCriacao;

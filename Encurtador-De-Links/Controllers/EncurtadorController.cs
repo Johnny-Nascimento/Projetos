@@ -10,8 +10,14 @@ public class EncurtadorController : ControllerBase
     private static List<Link>? Links { get; set; } = new List<Link>(); // Futuramente Readonly, banco de dados de vdd
 
     [HttpPost]
-    public IActionResult Post([FromBody] Link link)
+    public IActionResult Post([FromQuery] string link)
     {
+        if (!Uri.TryCreate(link, UriKind.Absolute, out Uri validatedUri))
+        {
+            if (validatedUri == null || (validatedUri.Scheme != Uri.UriSchemeHttp && validatedUri.Scheme != Uri.UriSchemeHttps))
+                return BadRequest("Link inválido!");
+        }
+
         Guid id = Guid.NewGuid();
 
         if (Links?.FirstOrDefault(l => l.Id == id) != null)
@@ -22,9 +28,8 @@ public class EncurtadorController : ControllerBase
         Link linkEncurtado = new Link(
             id,
             DateTime.Now,
-            link.Original,
-            linkCurto,
-            inativo: false);
+            link,
+            linkCurto);
 
         Links.Add(linkEncurtado);
 
