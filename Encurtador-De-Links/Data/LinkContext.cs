@@ -9,6 +9,5 @@ public class LinkContext : DbContext
 
     public LinkContext(DbContextOptions<LinkContext> options) : base(options)
     {
-
     }
 }

@@ -7,7 +7,7 @@ namespace Encurtador_De_Links.Controllers;
 [Route("[controller]")]
 public class EncurtadorController : ControllerBase
 {
-    private static List<LinkEncurtado>? Links { get; set; } = new List<LinkEncurtado>(); // Futuramente Readonly, banco de dados de vdd
+    private static List<Link>? Links { get; set; } = new List<Link>(); // Futuramente Readonly, banco de dados de vdd
 
     [HttpPost]
     public IActionResult Post([FromBody] Link link)
@@ -19,7 +19,7 @@ public class EncurtadorController : ControllerBase
 
         string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // Reduzir id
 
-        LinkEncurtado linkEncurtado = new LinkEncurtado(
+        Link linkEncurtado = new Link(
             id,
             DateTime.Now,
             link.Original,
@@ -33,14 +33,13 @@ public class EncurtadorController : ControllerBase
 
     // Autenticação, não deve ser usado sem role de admin, via servir para ter um painel de controle
     [HttpGet]
-    public IEnumerable<LinkEncurtado>? GetAll([FromQuery] bool trazerInativos, [FromQuery] int skip = 0, [FromQuery] int take = 50)
+    public IEnumerable<Link>? GetAll([FromQuery] bool trazerInativos, [FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
         if (trazerInativos)
             return Links.Skip(skip).Take(take);
         else
             return Links?.Where(l => l.Inativo == false).Skip(skip).Take(take);
     }
-
 
     [HttpGet("{id}")]
     public IActionResult GetById(Guid id)
@@ -54,7 +53,7 @@ public class EncurtadorController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateEncurtador/{linkUpdate}")]
-    public IActionResult Update(LinkUpdate linkUpdate)
+    public IActionResult Update(Link linkUpdate)
     {
         var linkCurto = Links?.FirstOrDefault(l => l.Id == linkUpdate.Id);
 
