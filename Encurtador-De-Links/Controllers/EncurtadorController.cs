@@ -17,7 +17,7 @@ public class EncurtadorController : ControllerBase
         if (Links?.FirstOrDefault(l => l.Id == id) != null)
             return Conflict($"Já existe um recurso com esse ID tente novamente.");
 
-        string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // dominio/id
+        string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // Reduzir id
 
         LinkEncurtado linkEncurtado = new LinkEncurtado(
             id,

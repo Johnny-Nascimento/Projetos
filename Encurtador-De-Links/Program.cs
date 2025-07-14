@@ -1,3 +1,6 @@
+using Encurtador_De_Links.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Encurtador_De_Links
 {
     public class Program
@@ -5,6 +8,9 @@ namespace Encurtador_De_Links
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            string connectionString = builder.Configuration.GetConnectionString("LinkConnection");
+            builder.Services.AddDbContext<LinkContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // Add services to the container.
 
