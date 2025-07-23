@@ -1,4 +1,5 @@
-﻿using Encurtador_De_Links.Models;
+﻿using Encurtador_De_Links.Data;
+using Encurtador_De_Links.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Encurtador_De_Links.Controllers;
@@ -7,7 +8,12 @@ namespace Encurtador_De_Links.Controllers;
 [Route("[controller]")]
 public class EncurtadorController : ControllerBase
 {
-    private static List<Link>? Links { get; set; } = new List<Link>(); // Futuramente Readonly, banco de dados de vdd
+    private LinkContext _Context;
+
+    public EncurtadorController(LinkContext context)
+    {
+        _Context = context;
+    }
 
     [HttpPost]
     public IActionResult Post([FromQuery] string link)
@@ -20,7 +26,7 @@ public class EncurtadorController : ControllerBase
 
         Guid id = Guid.NewGuid();
 
-        if (Links?.FirstOrDefault(l => l.Id == id) != null)
+        if (_Context.Links?.FirstOrDefault(l => l.Id == id) != null)
             return Conflict($"Já existe um recurso com esse ID tente novamente.");
 
         string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // Reduzir id
@@ -31,7 +37,8 @@ public class EncurtadorController : ControllerBase
             link,
             linkCurto);
 
-        Links.Add(linkEncurtado);
+        _Context.Links.Add(linkEncurtado);
+        _Context.SaveChanges();
 
         return CreatedAtAction("GetById", new { id = id }, linkEncurtado);
     }
@@ -41,15 +48,15 @@ public class EncurtadorController : ControllerBase
     public IEnumerable<Link>? GetAll([FromQuery] bool trazerInativos, [FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
         if (trazerInativos)
-            return Links.Skip(skip).Take(take);
+            return _Context.Links.Skip(skip).Take(take);
         else
-            return Links?.Where(l => l.Inativo == false).Skip(skip).Take(take);
+            return _Context.Links?.Where(l => l.Inativo == false).Skip(skip).Take(take);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetById(Guid id)
     {
-        var linkCurto = Links?.FirstOrDefault(l => l.Id == id);
+        var linkCurto = _Context.Links?.FirstOrDefault(l => l.Id == id);
 
         if (linkCurto == null)
             return NotFound();
@@ -57,15 +64,18 @@ public class EncurtadorController : ControllerBase
         return Ok(linkCurto.Original);
     }
 
-    [HttpPut(Name = "UpdateEncurtador/{linkUpdate}")]
-    public IActionResult Update(Link linkUpdate)
+    [HttpPut]
+    public IActionResult Update([FromQuery]Guid id, [FromQuery] string link)
     {
-        var linkCurto = Links?.FirstOrDefault(l => l.Id == linkUpdate.Id);
+        var linkCurto = _Context.Links?.FirstOrDefault(l => l.Id == id);
 
         if (linkCurto == null)
             return NotFound();
 
-        linkCurto.Update(linkUpdate);
+        linkCurto.Update(link);
+
+        _Context.Links.Update(linkCurto);
+        _Context.SaveChanges();
 
         return Ok(linkCurto);
     }

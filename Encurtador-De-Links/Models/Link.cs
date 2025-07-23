@@ -35,8 +35,8 @@ public class Link
         Inativo = true;
     }
 
-    public void Update(Link link)
+    public void Update(string link)
     {
-        Original = link.Original;
+        Original = link;
     }
 }
