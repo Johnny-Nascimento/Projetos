@@ -9,12 +9,14 @@ namespace Encurtador_De_Links
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add DB LinkContext configs
             string connectionString = builder.Configuration.GetConnectionString("LinkConnection");
             builder.Services.AddDbContext<LinkContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // Add services to the container.
 
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
