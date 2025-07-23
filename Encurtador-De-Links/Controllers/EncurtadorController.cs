@@ -14,6 +14,8 @@ namespace Encurtador_De_Links.Controllers;
     Criar uma rotina para que a cada X horas altere o link gerado e envie por email / whatsapp (Pensar sobre a utilidade)
     Google ads
     Criar a possibilidade de assinar um link vitalicio (tentar vincular a um sistema financeiro real ou homologação)
+
+    Comentario teste
  */
 
 [ApiController]
