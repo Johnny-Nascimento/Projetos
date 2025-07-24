@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Encurtador_De_Links.Controllers;
 
 /*
-    Criar roles para permissão de acesso as APIS
+    Criar roles para permissão de acesso a API
     Criar Login para possibilitar a compra de Link vitalicio e receber emails de inatividade
     Criar rotina para inativar links no banco após 24h (trigger?)
     Criar rotina para avisar via email e whatsapp o usuario que o link vai ficar inativo (mensageria kafka rabbit?)
