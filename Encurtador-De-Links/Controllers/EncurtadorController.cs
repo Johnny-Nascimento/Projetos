@@ -1,4 +1,6 @@
-﻿using Encurtador_De_Links.Data;
+﻿using AutoMapper;
+using Encurtador_De_Links.Data;
+using Encurtador_De_Links.Data.Dto;
 using Encurtador_De_Links.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,17 +23,19 @@ namespace Encurtador_De_Links.Controllers;
 public class EncurtadorController : ControllerBase
 {
     private LinkContext _Context;
+    private IMapper _Mapper;
 
-    public EncurtadorController(LinkContext context)
+    public EncurtadorController(LinkContext context, IMapper mapper)
     {
         _Context = context;
+        _Mapper = mapper;
     }
 
     // Vai ser publico sem roles
     [HttpPost]
-    public IActionResult Post([FromQuery] string link)
+    public IActionResult Post([FromBody] CreateLinkDto linkDto)
     {
-        if (!Uri.TryCreate(link, UriKind.Absolute, out Uri? validatedUri))
+        if (!Uri.TryCreate(linkDto.Original, UriKind.Absolute, out Uri? validatedUri))
         {
             if (validatedUri == null || (validatedUri.Scheme != Uri.UriSchemeHttp && validatedUri.Scheme != Uri.UriSchemeHttps))
                 return BadRequest("Link inválido!");
@@ -47,8 +51,12 @@ public class EncurtadorController : ControllerBase
         Link linkEncurtado = new Link(
             id,
             DateTime.Now,
-            link,
+            linkDto.Original,
             linkCurto);
+
+        // POR ENQUANTO ESTOU APENAS PASSANDO UM CAMPO MAS FICA APRA CONHEICMENTO A POSSIBILIDADE.
+            // linkEncurtado = _Mapper.Map<Link>(linkDto);
+        // POR ENQUANTO ESTOU APENAS PASSANDO UM CAMPO MAS FICA APRA CONHEICMENTO A POSSIBILIDADE.
 
         _Context?.Links?.Add(linkEncurtado);
         _Context?.SaveChanges();

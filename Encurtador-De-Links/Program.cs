@@ -13,6 +13,9 @@ namespace Encurtador_De_Links
             string connectionString = builder.Configuration.GetConnectionString("LinkConnection");
             builder.Services.AddDbContext<LinkContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+            // Add Automapper
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Add services to the container.
 
             builder.Services.AddControllers();
