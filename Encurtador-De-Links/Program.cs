@@ -1,4 +1,6 @@
 using Encurtador_De_Links.Data;
+using Encurtador_De_Links.Data.Dto;
+using Encurtador_De_Links.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Encurtador_De_Links
@@ -14,7 +16,11 @@ namespace Encurtador_De_Links
             builder.Services.AddDbContext<LinkContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // Add Automapper
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.CreateMap<Link, CreateLinkDto>();
+                cfg.CreateMap<CreateLinkDto, Link>();
+            });
 
             // Add services to the container.
 

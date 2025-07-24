@@ -48,15 +48,15 @@ public class EncurtadorController : ControllerBase
 
         string linkCurto = $"https://localhost:7245/Encurtador/{id}"; // Reduzir id
 
+        // AUTOMAPPER
+        // POR ENQUANTO ESTOU APENAS PASSANDO UM CAMPO URL MAS FICA APRA CONHECIMENTO A POSSIBILIDADE.
+        // Link linkEncurtado1 = _Mapper.Map<Link>(linkDto);
+
         Link linkEncurtado = new Link(
             id,
             DateTime.Now,
             linkDto.Original,
             linkCurto);
-
-        // POR ENQUANTO ESTOU APENAS PASSANDO UM CAMPO MAS FICA APRA CONHEICMENTO A POSSIBILIDADE.
-            // linkEncurtado = _Mapper.Map<Link>(linkDto);
-        // POR ENQUANTO ESTOU APENAS PASSANDO UM CAMPO MAS FICA APRA CONHEICMENTO A POSSIBILIDADE.
 
         _Context?.Links?.Add(linkEncurtado);
         _Context?.SaveChanges();
