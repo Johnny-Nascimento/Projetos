@@ -18,9 +18,17 @@ namespace Encurtador_De_Links
             // Add Automapper
             builder.Services.AddAutoMapper(cfg =>
             {
-                cfg.CreateMap<Link, CreateLinkDto>();
                 cfg.CreateMap<CreateLinkDto, Link>();
+                cfg.CreateMap<UpdateLinkDto, Link>();
             });
+
+            // TESTAR SE REVERSEMAP() remove a necessidade de fazer 2 linhas para cada DTO.
+            /* 
+            builder.Services.AddAutoMapper(cfg =>
+            {
+                cfg.CreateMap<Link, CreateLinkDto>().ReverseMap();
+            });
+            */
 
             // Add services to the container.
 

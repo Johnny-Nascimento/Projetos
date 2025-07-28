@@ -34,9 +34,4 @@ public class Link
     {
         Inativo = true;
     }
-
-    public void Update(string link)
-    {
-        Original = link;
-    }
 }

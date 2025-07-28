@@ -87,19 +87,23 @@ public class EncurtadorController : ControllerBase
     }
 
     // Autenticação, não deve ser usado sem role de admin, via servir para ter um painel de controle
-    [HttpPut]
-    public IActionResult Update([FromQuery]Guid id, [FromQuery] string link)
+    [HttpPut("{id}")]
+    public IActionResult Update(Guid id, [FromBody] UpdateLinkDto linkDto)
     {
-        var linkCurto = _Context?.Links?.FirstOrDefault(l => l.Id == id);
+        if (!Uri.TryCreate(linkDto.Original, UriKind.Absolute, out Uri? validatedUri))
+        {
+            if (validatedUri == null || (validatedUri.Scheme != Uri.UriSchemeHttp && validatedUri.Scheme != Uri.UriSchemeHttps))
+                return BadRequest("Link inválido!");
+        }
 
-        if (linkCurto == null)
+        var link = _Context?.Links?.FirstOrDefault(l => l.Id == id);
+
+        if (link == null)
             return NotFound();
 
-        linkCurto.Update(link);
-
-        _Context?.Links?.Update(linkCurto);
+        _Mapper.Map(linkDto, link);
         _Context?.SaveChanges();
 
-        return Ok(linkCurto);
+        return NoContent();
     }
 }
