@@ -19,20 +19,14 @@ namespace Encurtador_De_Links
             builder.Services.AddAutoMapper(cfg =>
             {
                 cfg.CreateMap<CreateLinkDto, Link>();
-                cfg.CreateMap<UpdateLinkDto, Link>();
+                cfg.CreateMap<UpdateLinkDto, Link>().ReverseMap();
             });
-
-            // TESTAR SE REVERSEMAP() remove a necessidade de fazer 2 linhas para cada DTO.
-            /* 
-            builder.Services.AddAutoMapper(cfg =>
-            {
-                cfg.CreateMap<Link, CreateLinkDto>().ReverseMap();
-            });
-            */
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services
+                .AddControllers()
+                .AddNewtonsoftJson();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

@@ -2,6 +2,7 @@
 using Encurtador_De_Links.Data;
 using Encurtador_De_Links.Data.Dto;
 using Encurtador_De_Links.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Encurtador_De_Links.Controllers;
@@ -102,6 +103,41 @@ public class EncurtadorController : ControllerBase
             return NotFound();
 
         _Mapper.Map(linkDto, link);
+        _Context?.SaveChanges();
+
+        return NoContent();
+    }
+
+    /*
+     * Como usar
+        {
+            "op": "replace",
+            "path": "/Original",
+            "value": "https://www.google.com"
+        }
+     */
+    // Autenticação, não deve ser usado sem role de admin, via servir para ter um painel de controle
+    [HttpPatch("{id}")]
+    public IActionResult Patch(Guid id, JsonPatchDocument<UpdateLinkDto> patch)
+    {
+        var link = _Context?.Links?.FirstOrDefault(l => l.Id == id);
+
+        if (link == null)
+            return NotFound();
+
+        var linkUpdate = _Mapper.Map<UpdateLinkDto>(link);
+        patch.ApplyTo(linkUpdate);
+
+        if (!TryValidateModel(linkUpdate))
+            return ValidationProblem(ModelState);
+
+        if (!Uri.TryCreate(linkUpdate.Original, UriKind.Absolute, out Uri? validatedUri))
+        {
+            if (validatedUri == null || (validatedUri.Scheme != Uri.UriSchemeHttp && validatedUri.Scheme != Uri.UriSchemeHttps))
+                return BadRequest("Link inválido!");
+        }
+
+        _Mapper.Map(linkUpdate, link);
         _Context?.SaveChanges();
 
         return NoContent();
