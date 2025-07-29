@@ -142,4 +142,22 @@ public class EncurtadorController : ControllerBase
 
         return NoContent();
     }
+
+    /*
+     * Deleção não vai deletar, apenas alterar para invativo.
+     */
+    // Autenticação, não deve ser usado sem role de admin, via servir para ter um painel de controle
+    [HttpDelete("{id}")]
+    public IActionResult Delete(Guid id)
+    {
+        var link = _Context?.Links?.FirstOrDefault(l => l.Id == id);
+
+        if (link == null)
+            return NotFound();
+
+        _Context?.Remove(link);
+        _Context?.SaveChanges();
+
+        return NoContent();
+    }
 }
