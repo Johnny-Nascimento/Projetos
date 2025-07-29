@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Encurtador_De_Links.Controllers;
 
 /*
+    Adicionar todos os DTOS faltantes. **
+
     Criar roles para permissão de acesso a API
     Criar Login para possibilitar a compra de Link vitalicio e receber emails de inatividade
     Criar rotina para inativar links no banco após 24h (trigger?)
