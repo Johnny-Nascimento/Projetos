@@ -12,9 +12,8 @@ namespace MEETJITSI.Controllers
     public class TokenController : ApiController
     {
         private static readonly string PrivateKeyPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Keys", "private.pem");
-        private const string APP_ID = "meu_app_id";              // ajustar
-        private const string JITSI_DOMAIN = "localhost:8180"; // ou meet.seudominio.com
-        private const string KID = "jitsi-key-1";                // deve bater com jwks
+        private const string JITSI_DOMAIN = "8x8.vc";
+        private const string KID = "vpaas-magic-cookie-33b51968168c448e998a145b085b4cc4/4278b0"; // VPASS KEY gerada
 
         [HttpPost]
         [Route("link")]
@@ -32,19 +31,19 @@ namespace MEETJITSI.Controllers
 
                 // Cabeçalho com kid
                 var header = new JwtHeader(credentials);
+                header["alg"] = "RS256";
                 header["kid"] = KID;
+                header["typ"] = "JWT";
 
                 // Payload Jitsi (ajuste conforme necessário)
                 var payload = new JwtPayload
                 {
                     { "aud", "jitsi" },
-                    { "iss", APP_ID },
-                    { "sub", JITSI_DOMAIN },
-                    { "room", request.Room },
                     { "context", new Dictionary<string, object>
                         {
                             { "user", new Dictionary<string, object>
                                 {
+                                    { "id", 1 },
                                     { "name", request.UserName ?? "Guest" },
                                     { "email", request.Email ?? "" },
                                     { "moderator", request.IsModerator }
@@ -52,13 +51,22 @@ namespace MEETJITSI.Controllers
                             }
                         }
                     },
-                    { "exp", DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds() }
+                    { "features", new Dictionary<string, object>    {
+                            { "livestreaming", true },
+                            { "recording", true }
+                        }
+                    },
+                    { "exp", DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds() },
+                    { "iss", "chat" },
+                    { "nbf", DateTimeOffset.UtcNow.AddMinutes(-5).ToUnixTimeSeconds() },
+                    { "room", request.Room },
+                    { "sub", "vpaas-magic-cookie-33b51968168c448e998a145b085b4cc4" }, // APPID
                 };
 
                 var token = new JwtSecurityToken(header, payload);
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-                var url = $"https://{JITSI_DOMAIN}/{request.Room}?jwt={tokenString}";
+                var url = $"https://{JITSI_DOMAIN}/vpaas-magic-cookie-33b51968168c448e998a145b085b4cc4/{request.Room}?jwt={tokenString}";
 
                 return Ok(new { url, token = tokenString });
             }
